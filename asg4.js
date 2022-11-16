@@ -9,9 +9,12 @@ var VSHADER_SOURCE =
   uniform mat4 u_GlobalRotateMatrix;
   uniform mat4 u_ProjectionMatrix;
   uniform mat4 u_ViewMatrix;
+  attribute vec3 a_Normal;
+  varying vec3 v_Normal;
   void main() {
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
     v_UV = a_UV;
+    v_Normal = a_Normal;
   }`;
 
 // Fragment shader program
@@ -19,6 +22,7 @@ var FSHADER_SOURCE =
   `precision mediump float;
   varying vec2 v_UV;
   uniform vec4 u_FragColor;
+  varying vec3 v_Normal;
   uniform sampler2D u_Sampler0;
   uniform sampler2D u_Sampler1;
   uniform sampler2D u_Sampler2;
@@ -28,7 +32,9 @@ var FSHADER_SOURCE =
   uniform sampler2D u_Sampler6;
   uniform int u_whichTexture;
   void main() {
-    if (u_whichTexture == -2) {
+    if (u_whichTexture == -3) {
+      gl_FragColor = vec4((v_Normal + 1.0)/2.0, 1.0);
+    } else if (u_whichTexture == -2) {
       gl_FragColor = u_FragColor;
     } else if (u_whichTexture == -1) {
       gl_FragColor = vec4(v_UV, 1.0, 1.0);
@@ -46,8 +52,7 @@ var FSHADER_SOURCE =
       gl_FragColor = texture2D(u_Sampler5, v_UV);
     } else if (u_whichTexture == 6) {
       gl_FragColor = texture2D(u_Sampler6, v_UV);
-    }
-    else {
+    } else {
       gl_FragColor = vec4(1, 0.2, 0.2, 1);
     }
   }`;
@@ -83,6 +88,7 @@ let mouse_rotate_z = 0;
 let u_Sampler0, u_Sampler1, u_Sampler2, u_Sampler3, u_Sampler4, u_Sampler5, u_Sampler6;
 let u_whichTexture;
 let u_factor;
+let a_Normal;
 // global animation variables
 let hello_animation_state = 0;
 let animation_leg_rotation = 0;
@@ -1186,6 +1192,12 @@ function connectVariablesToGLSL() {
   u_whichTexture = gl.getUniformLocation(gl.program, "u_whichTexture");
   if (!u_whichTexture) {
     console.log("Failed to get the u_whichTexture value");
+    return;
+  }
+
+  a_Normal = gl.getAttribLocation(gl.program, "a_Normal");
+  if (a_Normal < 0) {
+    console.log("Failed to get the location of a_Normal");
     return;
   }
 

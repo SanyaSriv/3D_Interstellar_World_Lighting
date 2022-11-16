@@ -108,46 +108,62 @@ class Cube {
     gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
 
     gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
-    var verticesArray = []
-    var uv_array = []
+    var verticesArray = [] // will store the coordinates
+    var uv_array = [] // will sstore the UV coordinates
+    var normal_array = [] // will store the normal data
+
+    // front face
     verticesArray = verticesArray.concat([0.0,0.0,0.0,  1.0,1.0,0.0,   1.0,0.0,0.0]);
     uv_array = uv_array.concat([0,0,1,1,1,0]);
-
+    normal_array = normal_array.concat([0,0,-1, 0,0,-1, 0,0,-1]);
     verticesArray = verticesArray.concat([0.0,0.0,0.0,  0.0,1.0,0.0,   1.0,1.0,0.0]);
     uv_array = uv_array.concat([0,0,0,1,1,1]);
+    normal_array = normal_array.concat([0,0,-1, 0,0,-1, 0,0,-1]);
 
+    // face - 2
     verticesArray = verticesArray.concat([0.0,1.0,0.0,  0.0,1.0,1.0,   1.0,1.0,1.0]);
     uv_array = uv_array.concat([0,0,0,1,1,1]);
-
+    normal_array = normal_array.concat([0,1,0, 0,1,0, 0,1,0]);
     verticesArray = verticesArray.concat([0.0,1.0,0.0,  1.0,1.0,1.0,   1.0,1.0,0.0]);
     uv_array = uv_array.concat([0,0,1,1,1,0]);
+    normal_array = normal_array.concat([0,1,0, 0,1,0, 0,1,0]);
 
+    // face - 3
     verticesArray = verticesArray.concat([0.0,0.0,0.0,  0.0,0.0,1.0,   0.0,1.0,1.0]);
     uv_array = uv_array.concat([0,0,1,0,1,1]);
-
+    normal_array = normal_array.concat([-1,0,0, -1,0,0, -1,0,0]);
     verticesArray = verticesArray.concat([0.0,0.0,0.0,  0.0,1.0,0.0,   0.0,1.0,1.0]);
     uv_array = uv_array.concat([0,0,0,1,1,1]);
+    normal_array = normal_array.concat([-1,0,0, -1,0,0, -1,0,0]);
 
+    // face 4
     verticesArray = verticesArray.concat([0.0,0.0,1.0,  0.0,1.0,1.0,   1.0,1.0,1.0]);
     uv_array = uv_array.concat([0,0,0,1,1,1]);
-
+    normal_array = normal_array.concat([0,0,1, 0,0,1, 0,0,1]);
     verticesArray = verticesArray.concat([1.0,0.0,1.0,  0.0,0.0,1.0,   1.0,1.0,1.0]);
     uv_array = uv_array.concat([1,0,0,0,1,1]);
+    normal_array = normal_array.concat([0,0,1, 0,0,1, 0,0,1]);
 
+    // face 5
     verticesArray = verticesArray.concat([1.0,0.0,0.0,  1.0,1.0,1.0,   1.0,1.0,0.0]);
     uv_array = uv_array.concat([0,0,1,1,0,1]);
-
+    normal_array = normal_array.concat([1,0,0, 1,0,0, 1,0,0]);
     verticesArray = verticesArray.concat([1.0,0.0,0.0,  1.0,0.0,1.0,   1.0,1.0,1.0]);
     uv_array = uv_array.concat([0,0,1,0,1,1]);
+    normal_array = normal_array.concat([1,0,0, 1,0,0, 1,0,0]);
 
+    // face 6
     verticesArray = verticesArray.concat([0.0,0.0,0.0,  1.0,0.0,0.0,   1.0,0.0,1.0]);
     uv_array = uv_array.concat([0,1,1,1,1,0]);
-
+    normal_array = normal_array.concat([0,-1,0, 0,-1,0, 0,-1,0]);
     verticesArray = verticesArray.concat([0.0,0.0,0.0,  0.0,0.0,1.0,   1.0,0.0,1.0]);
     uv_array = uv_array.concat([0,1,0,0,1,0]);
-    drawTriangles3DUV(verticesArray, uv_array);
+    normal_array = normal_array.concat([0,-1,0, 0,-1,0, 0,-1,0]);
+
+    // drawTriangles3DUV(verticesArray, uv_array);
+    drawTriangles3DUVNormal(verticesArray, uv_array, normal_array);
     // drawTriangles3DUV(this.vertices, this.uv_cord);
   }
 
-  // }
+
 }
