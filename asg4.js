@@ -402,17 +402,22 @@ function renderMap() {
           if (g_color_map[i][j] == 0) {
             if (k % 2 != 0) {
               wall.textureNum = 4;
+              wall.textureNum = -3;
             } else {
               wall.textureNum = 3;
+              wall.textureNum = -3;
             }
           } else if (g_color_map[i][j] == 1) {
-            wall.textureNum = -2;
+            // wall.textureNum = -2;
+            wall.textureNum = -3;
             wall.color = [235/255, 52/255, 97/255, 1.0];
           } else if (g_color_map[i][j] == 3) {
-            wall.textureNum = -2;
+            // wall.textureNum = -2;
+            wall.textureNum = -3;
             wall.color = [168/255, 114/255, 12/255, 1.0];
           } else if (g_color_map[i][j] == 4) {
-            wall.textureNum = -2;
+            // wall.textureNum = -2;
+            wall.textureNum = -3;
             wall.color = [16/255, 151/255, 158/255, 1.0];
           }
 
@@ -1019,7 +1024,8 @@ function renderScene() {
   var sky = new Cube();
   sky.color = [1, 0, 0, 1.0];
   sky.textureNum = 2;
-  sky.matrix.scale(50,50,50);
+  sky.textureNum = -3;
+  sky.matrix.scale(-50,-50,-50);
   sky.matrix.translate(-0.5, -0.5, -0.5);
   var sky_reference_matrix = new Matrix4(sky.matrix);
   sky.renderFast();
@@ -1037,6 +1043,7 @@ function renderScene() {
 
     block.color = [1, 0, 0, 1.0];
     block.textureNum = -1;
+    // block.textureNum = -3;
     block.matrix.translate(0, -0.75, 0);
     block.matrix.scale(1.2, 1.2, 1.2);
     block.matrix.translate(x, 0, - z - 7);
