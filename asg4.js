@@ -97,10 +97,14 @@ let mine_craft_cube_x_y_coord = [];
 let g_GlobalCameraInstance;
 let texture_or_color = 0;
 let globalFOV = 0;
+let normal_value = 0;
+
 // // this will listen to all sliders
 // this is slowing down the program
 function AddActionsToHtmlUI() {
   // listener for camera angle
+  document.getElementById("Normal_On").addEventListener('mousedown', function() {normal_value = 1;});
+  document.getElementById("Normal_Off").addEventListener('mousedown', function() {normal_value = 0;});
   document.getElementById("camera_angle").addEventListener('mousemove', function() {g_GlobalCameraInstance.fov = parseInt(this.value);});
   document.getElementById("Add_block").addEventListener('mousedown', function() {texture_or_color = 0; add_block();});
   // document.getElementById("Add_block_colored").addEventListener('mousedown', function() {texture_or_color = 1; add_block();});
@@ -402,22 +406,33 @@ function renderMap() {
           if (g_color_map[i][j] == 0) {
             if (k % 2 != 0) {
               wall.textureNum = 4;
-              wall.textureNum = -3;
+              if (normal_value == 1) {
+                wall.textureNum = -3;
+              }
+              
             } else {
               wall.textureNum = 3;
-              wall.textureNum = -3;
+              if (normal_value == 1) {
+                wall.textureNum = -3;
+              }
             }
           } else if (g_color_map[i][j] == 1) {
-            // wall.textureNum = -2;
-            wall.textureNum = -3;
+            wall.textureNum = -2;
+            if (normal_value == 1) {
+              wall.textureNum = -3;
+            }
             wall.color = [235/255, 52/255, 97/255, 1.0];
           } else if (g_color_map[i][j] == 3) {
-            // wall.textureNum = -2;
-            wall.textureNum = -3;
+            wall.textureNum = -2;
+            if (normal_value == 1) {
+              wall.textureNum = -3;
+            }
             wall.color = [168/255, 114/255, 12/255, 1.0];
           } else if (g_color_map[i][j] == 4) {
-            // wall.textureNum = -2;
-            wall.textureNum = -3;
+            wall.textureNum = -2;
+            if (normal_value == -3) {
+              wall.textureNum = -3;
+            }
             wall.color = [16/255, 151/255, 158/255, 1.0];
           }
 
@@ -996,6 +1011,9 @@ function renderScene() {
   gold_cube.matrix.translate(0.01, -0.74, 0);
   gold_cube.matrix.scale(0.5, 0.5, 0.5);
   gold_cube.textureNum = 5;
+  if (normal_value == 1) {
+    gold_cube.textureNum = -3;
+  }
   gold_cube.renderFast();
 
   var silver_cube = new Cube();
@@ -1003,6 +1021,9 @@ function renderScene() {
   silver_cube.matrix.translate(-7.0, -0.74, 0);
   silver_cube.matrix.scale(0.5, 0.5, 0.5);
   silver_cube.textureNum = 6;
+  if (normal_value == 1) {
+    silver_cube.textureNum = -3;
+  }
   silver_cube.renderFast();
 
   var energy = new Cube();
@@ -1010,6 +1031,9 @@ function renderScene() {
   energy.matrix.translate(10, -0.74, 0);
   energy.matrix.scale(0.5, 0.5, 0.5);
   energy.textureNum = -2;
+  if (normal_value == 1) {
+    energy.textureNum = -3;
+  }
   energy.renderFast();
 
   var floor = new Cube();
@@ -1019,12 +1043,17 @@ function renderScene() {
   // floor.matrix.scale(10, 0, 10);
   floor.matrix.translate(-0.5, 0, -0.5);
   floor.textureNum = 1;
+  if (normal_value == 1) {
+    floor.textureNum = -3;
+  }
   floor.renderFast();
 
   var sky = new Cube();
   sky.color = [1, 0, 0, 1.0];
   sky.textureNum = 2;
-  sky.textureNum = -3;
+  if (normal_value == 1) {
+    sky.textureNum = -3;
+  }
   sky.matrix.scale(-50,-50,-50);
   sky.matrix.translate(-0.5, -0.5, -0.5);
   var sky_reference_matrix = new Matrix4(sky.matrix);
@@ -1043,7 +1072,9 @@ function renderScene() {
 
     block.color = [1, 0, 0, 1.0];
     block.textureNum = -1;
-    // block.textureNum = -3;
+    if (normal_value == 1) {
+      block.textureNum = -3;
+    }
     block.matrix.translate(0, -0.75, 0);
     block.matrix.scale(1.2, 1.2, 1.2);
     block.matrix.translate(x, 0, - z - 7);
