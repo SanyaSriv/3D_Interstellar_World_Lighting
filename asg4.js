@@ -1059,6 +1059,17 @@ function renderScene() {
   var sky_reference_matrix = new Matrix4(sky.matrix);
   sky.renderFast();
 
+  // drawing a sphere
+  var s1 = new Sphere();
+  s1.color = [1, 0, 0, 1];
+  s1.textureNum = -2;
+  if (normal_value == 1) {
+    s1.textureNum = -3;
+  }
+  s1.matrix.scale(2,2,2);
+  s1.matrix.translate(-0.3, 1.20, 0);
+  s1.render();
+
   // draw the mine craft cubes
   var index = mine_craft_cube_x_y_coord.length - 1
   for(var i = 0; i < number_of_minecraft_cubes; i++) {

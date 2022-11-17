@@ -56,7 +56,7 @@ class Cube {
     // console.log(this.vertices);
     // drawTriangles3D(this.vertices, this.color);
 
-    front
+    // front
     drawTriangles3DUV([0.0,0.0,0.0,  1.0,1.0,0.0,   1.0,0.0,0.0], [0,0,1,1,1,0]);
     // drawTriangles3D([0.0,0.0,0.0,  1.0,1.0,0.0,   1.0,0.0,0.0]);
     drawTriangles3DUV([0.0,0.0,0.0,  0.0,1.0,0.0,   1.0,1.0,0.0], [0,0,0,1,1,1]);
