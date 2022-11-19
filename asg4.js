@@ -5,6 +5,7 @@ var VSHADER_SOURCE =
   attribute vec4 a_Position;
   attribute vec2 a_UV;
   varying vec2 v_UV;
+  varying vec4 v_VertPos;
   uniform mat4 u_ModelMatrix;
   uniform mat4 u_GlobalRotateMatrix;
   uniform mat4 u_ProjectionMatrix;
@@ -15,6 +16,7 @@ var VSHADER_SOURCE =
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
     v_UV = a_UV;
     v_Normal = a_Normal;
+    v_VertPos = u_ModelMatrix * a_Position;
   }`;
 
 // Fragment shader program
@@ -22,7 +24,9 @@ var FSHADER_SOURCE =
   `precision mediump float;
   varying vec2 v_UV;
   uniform vec4 u_FragColor;
+  uniform vec3 u_lightPos;
   varying vec3 v_Normal;
+  varying vec4 v_VertPos;
   uniform sampler2D u_Sampler0;
   uniform sampler2D u_Sampler1;
   uniform sampler2D u_Sampler2;
@@ -54,6 +58,14 @@ var FSHADER_SOURCE =
       gl_FragColor = texture2D(u_Sampler6, v_UV);
     } else {
       gl_FragColor = vec4(1, 0.2, 0.2, 1);
+    }
+
+    vec3 lightVector = vec3(v_VertPos) - u_lightPos;
+    float r = length(lightVector);
+    if (r < 4.0) {
+      gl_FragColor = vec4(1, 0, 0, 1);
+    } else if (r < 7.0) {
+      gl_FragColor = vec4(0, 1, 0, 1);
     }
   }`;
 
@@ -99,6 +111,7 @@ let texture_or_color = 0;
 let globalFOV = 0;
 let normal_value = 0;
 let light_position = [3, 6, 0];
+let u_lightPos;
 
 // // this will listen to all sliders
 // this is slowing down the program
@@ -1002,6 +1015,12 @@ function renderScene() {
                     g_GlobalCameraInstance.up.x, g_GlobalCameraInstance.up.y, g_GlobalCameraInstance.up.z); // eye, at, up
   gl.uniformMatrix4fv(u_ViewMatrix, false, viewMat.elements);
 
+  // passing the light position
+  // let lp = new vec3();
+  // lp[0] = light_position[0];
+  // lp[1] = light_position[1];
+  // lp[2] = light_position[2];
+  gl.uniform3f(u_lightPos, light_position[0], light_position[1], light_position[2]);
   // setting up the scaling
   // var scaling_mat = new Matrix4().scale((global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom);
   // gl.uniformMatrix4fv(u_GlobalScaleMatrix, false, scaling_mat.elements);
@@ -1175,6 +1194,13 @@ function connectVariablesToGLSL() {
   u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
   if (!u_ModelMatrix) {
     console.log('Failed to get the storage location of u_PointSize');
+    return;
+  }
+  
+  // getting the position for u_lightPos
+  u_lightPos = gl.getUniformLocation(gl.program, 'u_lightPos');
+  if (!u_lightPos) {
+    console.log('Failed to get the storage location for u_lightPos');
     return;
   }
 
