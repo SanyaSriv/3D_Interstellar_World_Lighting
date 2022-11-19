@@ -98,6 +98,7 @@ let g_GlobalCameraInstance;
 let texture_or_color = 0;
 let globalFOV = 0;
 let normal_value = 0;
+let light_position = [3, 6, 0];
 
 // // this will listen to all sliders
 // this is slowing down the program
@@ -105,6 +106,9 @@ function AddActionsToHtmlUI() {
   // listener for camera angle
   document.getElementById("Normal_On").addEventListener('mousedown', function() {normal_value = 1;});
   document.getElementById("Normal_Off").addEventListener('mousedown', function() {normal_value = 0;});
+  document.getElementById("light_x").addEventListener('mousemove', function() {light_position[0] = this.value;});
+  document.getElementById("light_y").addEventListener('mousemove', function() {light_position[1] = this.value;});
+  document.getElementById("light_z").addEventListener('mousemove', function() {light_position[2] = this.value;});
   document.getElementById("camera_angle").addEventListener('mousemove', function() {g_GlobalCameraInstance.fov = parseInt(this.value);});
   document.getElementById("Add_block").addEventListener('mousedown', function() {texture_or_color = 0; add_block();});
   // document.getElementById("Add_block_colored").addEventListener('mousedown', function() {texture_or_color = 1; add_block();});
@@ -1069,6 +1073,14 @@ function renderScene() {
   s1.matrix.scale(2,2,2);
   s1.matrix.translate(-0.3, 1.20, 0);
   s1.render();
+
+  // drawing the light
+  var light = new Cube();
+  light.matrix.translate(light_position[0], light_position[1], light_position[2]);
+  light.matrix.scale(0.1,0.1,0.1)
+  light.color = [2, 2, 0, 1];
+  light.textureNum = -2;
+  light.renderFast();
 
   // draw the mine craft cubes
   var index = mine_craft_cube_x_y_coord.length - 1
