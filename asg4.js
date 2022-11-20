@@ -87,8 +87,8 @@ var FSHADER_SOURCE =
     vec3 E = normalize(u_CameraPos - vec3(v_VertPos));
 
     // specular
-    float specular = pow(max(dot(E, R), 0.0), 90.0);
-
+    // float specular = pow(max(dot(E, R), 0.0), 90.0);
+    vec3 specular = pow(max(dot(E, R), 0.0), 90.0) * vec3(u_lightColor[0], u_lightColor[1], u_lightColor[2]);
     // diffuse - color of the light should be changed here
     // vec3 diffuse = vec3(gl_FragColor) * nDotL * 0.7;
     vec3 diffuse = vec3(gl_FragColor) * vec3(u_lightColor[0], u_lightColor[1], u_lightColor[2]) * nDotL * 0.7;
@@ -152,11 +152,17 @@ let light_on_off_value = 1;
 let u_normalMatrix;
 let u_lightColor;
 let light_color_vector = [1, 1, 1];
+let light_animation = 0;
+let light_animation_type = 0; // circular, 1 = horizontal
 
 // // this will listen to all sliders
 // this is slowing down the program
 function AddActionsToHtmlUI() {
   // listener for camera angle
+  document.getElementById("Circular_Animation").addEventListener('mousedown', function() {light_animation_type = 0;});
+  document.getElementById("Horizontal_Animation").addEventListener('mousedown', function() {light_animation_type = 1;});
+  document.getElementById("Light_Animation_On").addEventListener('mousedown', function() {light_animation = 1;});
+  document.getElementById("Light_Animation_Off").addEventListener('mousedown', function() {light_animation = 0;});
   document.getElementById("Light_color_r").addEventListener('mousemove', function() {light_color_vector[0] = this.value / 255;});
   document.getElementById("Light_color_g").addEventListener('mousemove', function() {light_color_vector[1] = this.value / 255;});
   document.getElementById("Light_color_b").addEventListener('mousemove', function() {light_color_vector[2] = this.value / 255;});
@@ -395,9 +401,9 @@ g_map = [
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // <- player begins's here
-  [0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // <- player begins's here
+  [0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -514,7 +520,7 @@ function renderWallE() {
     // Clear the canvas
     // console.log("Came here, going to draw the body: ", shift_animation_rotation);
     // checkig for the leg movement - if it is not the default
-    var start_time = performance.now();
+    // var start_time = performance.now();
 
     var combined_x_rotation = parseFloat(g_globalAngle) + parseFloat(shift_animation_rotation) + parseFloat(mouse_rotate_x);
     var combined_y_rotation = parseFloat(g_globalAngleVertical) + parseFloat(mouse_rotate_y);
@@ -533,7 +539,7 @@ function renderWallE() {
 
     var reflection_matrix = new Matrix4([1,0,0,0, 0,-1,0,0, 0,0,-1,0, 0,0,0,1])
 
-    x_factor = 2
+    x_factor = 2;
     // console.log(global_scale);
     // main body
     var body = new Cube();
@@ -1085,6 +1091,18 @@ function renderWallE() {
 function renderScene() {
   // Clear the canvas
   // checkig for the leg movement - if it is not the default
+  if (light_animation == 1) {
+    // if motion type is circular then: 
+    // change the position of the light
+    if (light_animation_type == 0) {
+      light_position[0] = Math.cos(ticker / 60) * 11;
+      light_position[2] = Math.sin(ticker / 60) * 14;
+    } else if (light_animation_type == 1) {
+      light_position[0] = Math.cos(ticker / 60) * 6;
+    }
+
+    // if motion type is just horizontal then:
+  }
   var start_time = performance.now();
   var combined_x_rotation = parseFloat(g_globalAngle) + parseFloat(shift_animation_rotation) + parseFloat(mouse_rotate_x);
   var combined_y_rotation = parseFloat(g_globalAngleVertical) + parseFloat(mouse_rotate_y);
@@ -1192,8 +1210,8 @@ function renderScene() {
   if (normal_value == 1) {
     s1.textureNum = -3;
   }
-  s1.matrix.scale(2,2,2);
-  s1.matrix.translate(-0.3, 1.20, 0);
+  s1.matrix.scale(1.5,1.5,1.5);
+  s1.matrix.translate(1, 1.20, 0);
   s1.render();
 
   // drawing the light
@@ -1204,6 +1222,15 @@ function renderScene() {
   light.textureNum = -2;
   light.normalMatrix.setInverseOf(light.matrix).transpose();
   light.renderFast();
+
+  var spotlight = new Cube();
+  spotlight.matrix.translate(-2.5, 2.5, 3);
+  spotlight.matrix.scale(-0.2, -0.2, -0.2);
+  spotlight.color = [2, 2, 0, 1];
+  spotlight.textureNum = -2;
+  spotlight.normalMatrix.setInverseOf(spotlight.matrix).transpose();
+  spotlight.renderFast();
+
 
   // draw the mine craft cubes
   var index = mine_craft_cube_x_y_coord.length - 1
@@ -1231,7 +1258,7 @@ function renderScene() {
   // rendering the map
   renderMap();
   // now going to render WallE
-  renderWallE();
+  // renderWallE();
 
   // calculating the performance in the very end;
   var duration = performance.now() - start_time;
