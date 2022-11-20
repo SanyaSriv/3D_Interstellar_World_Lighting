@@ -35,6 +35,7 @@ var FSHADER_SOURCE =
   uniform sampler2D u_Sampler5;
   uniform sampler2D u_Sampler6;
   uniform int u_whichTexture;
+  uniform vec3 u_CameraPos;
   void main() {
     if (u_whichTexture == -3) {
       gl_FragColor = vec4((v_Normal + 1.0)/2.0, 1.0);
@@ -76,9 +77,22 @@ var FSHADER_SOURCE =
     vec3 N = normalize(v_Normal);
     float nDotL = max(dot(N, L), 0.0);
 
-    vec3 diffuse = vec3(gl_FragColor) * nDotL;
+    // Reflection
+    vec3 R = reflect(-L, N);
+
+    // eye
+    vec3 E = normalize(u_CameraPos - vec3(v_VertPos));
+
+    // specular
+    float specular = pow(max(dot(E, R), 0.0), 90.0);
+
+    // diffuse
+    vec3 diffuse = vec3(gl_FragColor) * nDotL * 0.7;
+
+    // ambient
     vec3 ambient = vec3(gl_FragColor) * 0.3;
-    gl_FragColor = vec4(diffuse + ambient, 1.0);
+    gl_FragColor = vec4(diffuse + ambient + specular, 1.0);
+
     // gl_FragColor = gl_FragColor * nDotL;
     // gl_FragColor.a = 1.0;
   }`;
@@ -126,6 +140,7 @@ let globalFOV = 0;
 let normal_value = 0;
 let light_position = [3, 6, 0];
 let u_lightPos;
+let u_CameraPos;
 
 // // this will listen to all sliders
 // this is slowing down the program
@@ -1035,6 +1050,8 @@ function renderScene() {
   // lp[1] = light_position[1];
   // lp[2] = light_position[2];
   gl.uniform3f(u_lightPos, light_position[0], light_position[1], light_position[2]);
+
+  gl.uniform3f(u_CameraPos, g_GlobalCameraInstance.eye.x, g_GlobalCameraInstance.eye.y , g_GlobalCameraInstance.eye.z);
   // setting up the scaling
   // var scaling_mat = new Matrix4().scale((global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom);
   // gl.uniformMatrix4fv(u_GlobalScaleMatrix, false, scaling_mat.elements);
@@ -1110,7 +1127,7 @@ function renderScene() {
   // drawing the light
   var light = new Cube();
   light.matrix.translate(light_position[0], light_position[1], light_position[2]);
-  light.matrix.scale(0.1,0.1,0.1)
+  light.matrix.scale(-0.1,-0.1,-0.1)
   light.color = [2, 2, 0, 1];
   light.textureNum = -2;
   light.renderFast();
@@ -1299,6 +1316,12 @@ function connectVariablesToGLSL() {
   a_Normal = gl.getAttribLocation(gl.program, "a_Normal");
   if (a_Normal < 0) {
     console.log("Failed to get the location of a_Normal");
+    return;
+  }
+
+  u_CameraPos = gl.getUniformLocation(gl.program, "u_CameraPos");
+  if (!u_CameraPos) {
+    console.log("Failed to get the location of u_CameraPos");
     return;
   }
 
