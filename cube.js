@@ -31,6 +31,7 @@ class Cube {
     //   0,1,1,1,1,0,
     //   0,1,0,0,1,0
     // ]
+    this.normalMatrix = new Matrix4();
     this.color = null;
     this.textureNum = -2;
     this.factor = 1;
@@ -50,6 +51,8 @@ class Cube {
     gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
 
     gl.uniform1i(u_factor, this.color_ratio);
+
+    // gl.uniformMatrix4fv(u_normalMatrix, false, this.normalMatrix.elements);
     // if (this.vertices === null) {
     //   this.generateVertices();
     // }

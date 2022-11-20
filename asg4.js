@@ -10,6 +10,7 @@ var VSHADER_SOURCE =
   uniform mat4 u_GlobalRotateMatrix;
   uniform mat4 u_ProjectionMatrix;
   uniform mat4 u_ViewMatrix;
+  // uniform mat4 u_normalMatrix;
   attribute vec3 a_Normal;
   varying vec3 v_Normal;
   void main() {
@@ -146,6 +147,7 @@ let light_position = [3, 6, 0];
 let u_lightPos;
 let u_CameraPos;
 let light_on_off_value = 1;
+let u_normalMatrix;
 
 // // this will listen to all sliders
 // this is slowing down the program
@@ -493,6 +495,7 @@ function renderMap() {
           wall.matrix.scale(1.2, 1.2, 1.2);
           wall.matrix.translate(i-16, 0, j-16);
           size_to_add += 1.2;
+          wall.normalMatrix.setInverseOf(wall.matrix).transpose();
           wall.renderFast();
         }
       }
@@ -530,6 +533,7 @@ function renderWallE() {
     body.color = [254/255, 175/255, 52/255, 1.0];
     body.matrix.setTranslate(-0.5 + x_factor, -0.5, -0.5);
     body.matrix.scale(0.5 , 0.5 , 0.5 );
+    body.normalMatrix.setInverseOf(body.matrix).transpose();
     body.renderFast();
 
     //body detail
@@ -537,30 +541,35 @@ function renderWallE() {
     body_detail.color = [207/255,167/255,105/255, 1.0];
     body_detail.matrix.setTranslate(-0.35 + x_factor, -0.20, -0.52);
     body_detail.matrix.scale(0.35 , 0.2 , 0.03 );
+    body_detail.normalMatrix.setInverseOf(body_detail.matrix).transpose();
     body_detail.renderFast();
 
     var battery_screen = new Cube();
     battery_screen.color = [0.0, 0.0, 0.0, 1.0];
     battery_screen.matrix.setTranslate(-0.15 + x_factor, -0.15, -0.53);
     battery_screen.matrix.scale(0.08 , 0.12 , 0.05 );
+    battery_screen.normalMatrix.setInverseOf(battery_screen.matrix).transpose();
     battery_screen.renderFast();
 
     var battery_bar_1 = new Cube();
     battery_bar_1.color = [224/255, 231/255, 34/255, 1.0];
     battery_bar_1.matrix.translate(-0.128 + x_factor, -0.14, -0.54);
     battery_bar_1.matrix.scale(0.04 , 0.01 , 0.01 );
+    battery_bar_1.normalMatrix.setInverseOf(battery_bar_1.matrix).transpose();
     battery_bar_1.renderFast();
 
     var battery_bar_2 = new Cube();
     battery_bar_2.color = [224/255, 231/255, 34/255, 1.0];
     battery_bar_2.matrix.translate(-0.128 + x_factor, -0.12, -0.54);
     battery_bar_2.matrix.scale(0.04 , 0.01 , 0.01 );
+    battery_bar_2.normalMatrix.setInverseOf(battery_bar_2.matrix).transpose();
     battery_bar_2.renderFast();
 
     var battery_bar_3 = new Cube();
     battery_bar_3.color = [224/255, 231/255, 34/255, 1.0];
     battery_bar_3.matrix.translate(-0.128 + x_factor, -0.10, -0.54);
     battery_bar_3.matrix.scale(0.04 , 0.01 , 0.01 );
+    battery_bar_3.normalMatrix.setInverseOf(battery_bar_3.matrix).transpose();
     battery_bar_3.renderFast();
 
     var red_button = new Cylinder();
@@ -573,48 +582,56 @@ function renderWallE() {
     body_grill.color = [94/255, 110/255, 115/255, 1.0];
     body_grill.matrix.translate(-0.3 + x_factor, -0.095, -0.53);
     body_grill.matrix.scale(0.12 , 0.06 , 0.01 );
+    body_grill.normalMatrix.setInverseOf(body_grill.matrix).transpose();
     body_grill.renderFast();
 
     var grill_bar_1 = new Cube();
     grill_bar_1.color = [0.0, 0.0, 0.0, 1.0];
     grill_bar_1.matrix.translate(-0.28 + x_factor, -0.088, -0.54);
     grill_bar_1.matrix.scale(0.037 , 0.01 , 0.001 );
+    grill_bar_1.normalMatrix.setInverseOf(grill_bar_1.matrix).transpose();
     grill_bar_1.renderFast();
 
     var grill_bar_2 = new Cube();
     grill_bar_2.color = [0.0, 0.0, 0.0, 1.0];
     grill_bar_2.matrix.translate(-0.23 + x_factor, -0.088, -0.54);
     grill_bar_2.matrix.scale(0.037 , 0.01 , 0.001 );
+    grill_bar_2.normalMatrix.setInverseOf(grill_bar_2.matrix).transpose();
     grill_bar_2.renderFast();
 
     var grill_bar_3 = new Cube();
     grill_bar_3.color = [0.0, 0.0, 0.0, 1.0];
     grill_bar_3.matrix.translate(-0.28 + x_factor, -0.074, -0.54);
     grill_bar_3.matrix.scale(0.037 , 0.01 , 0.001 );
+    grill_bar_3.normalMatrix.setInverseOf(grill_bar_3.matrix).transpose();
     grill_bar_3.renderFast();
 
     var grill_bar_4 = new Cube();
     grill_bar_4.color = [0.0, 0.0, 0.0, 1.0];
     grill_bar_4.matrix.translate(-0.23 + x_factor, -0.074, -0.54);
     grill_bar_4.matrix.scale(0.037 , 0.01 , 0.001 );
+    grill_bar_4.normalMatrix.setInverseOf(grill_bar_4.matrix).transpose();
     grill_bar_4.renderFast();
 
     var grill_bar_5 = new Cube();
     grill_bar_5.color = [0.0, 0.0, 0.0, 1.0];
     grill_bar_5.matrix.translate(-0.28 + x_factor, -0.06, -0.54);
     grill_bar_5.matrix.scale(0.037, 0.01, 0.001);
+    grill_bar_5.normalMatrix.setInverseOf(grill_bar_5.matrix).transpose();
     grill_bar_5.renderFast();
 
     var grill_bar_6 = new Cube();
     grill_bar_6.color = [0.0, 0.0, 0.0, 1.0];
     grill_bar_6.matrix.translate(-0.23 + x_factor, -0.06, -0.54);
     grill_bar_6.matrix.scale(0.037, 0.01, 0.001);
+    grill_bar_6.normalMatrix.setInverseOf(grill_bar_6.matrix).transpose();
     grill_bar_6.renderFast();
 
     var black_lining_front = new Cube();
     black_lining_front.color = [51/255, 53/255, 54/255, 1.0];
     black_lining_front.matrix.translate(-0.5 + x_factor, -0.02, -0.53);
     black_lining_front.matrix.scale(0.50, 0.02, 0.02);
+    black_lining_front.normalMatrix.setInverseOf(black_lining_front.matrix).transpose();
     black_lining_front.renderFast();
 
     var black_lining_right = new Cube();
@@ -622,6 +639,7 @@ function renderWallE() {
     black_lining_right.matrix.translate(-0.52 + x_factor, -0.021, 0);
     black_lining_right.matrix.rotate(90, 0, 1, 0);
     black_lining_right.matrix.scale(0.50, 0.02, 0.02);
+    black_lining_right.normalMatrix.setInverseOf(black_lining_right.matrix).transpose();
     black_lining_right.renderFast();
 
     var black_lining_left = new Cube();
@@ -629,6 +647,7 @@ function renderWallE() {
     black_lining_left.matrix.translate(0.0 + x_factor, -0.021, 0);
     black_lining_left.matrix.rotate(90, 0, 1, 0);
     black_lining_left.matrix.scale(0.50, 0.02, 0.02);
+    black_lining_left.normalMatrix.setInverseOf(black_lining_left.matrix).transpose();
     black_lining_left.renderFast();
 
     // making text on Wall-E's body - | of W
@@ -639,18 +658,21 @@ function renderWallE() {
     w_1.color = [0,0,0, 1.0];
     w_1.matrix.setTranslate(-0.36 + x_factor, -0.45, -0.51);
     w_1.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.01);
+    w_1.normalMatrix.setInverseOf(w_1.matrix).transpose();
     w_1.renderFast();
 
     var w_2 = new Cube();
     w_2.color = [0,0,0, 1.0];
     w_2.matrix.setTranslate(-0.34 + x_factor, -0.45, -0.51);
     w_2.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.01);
+    w_2.normalMatrix.setInverseOf(w_2.matrix).transpose();
     w_2.renderFast();
 
     var w_3 = new Cube();
     w_3.color = [0,0,0, 1.0];
     w_3.matrix.setTranslate(-0.32 + x_factor, -0.45, -0.51);
     w_3.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.01);
+    w_3.normalMatrix.setInverseOf(w_3.matrix).transpose();
     w_3.renderFast();
 
     var w_4 = new Cube();
@@ -658,6 +680,7 @@ function renderWallE() {
     w_4.matrix.setTranslate(-0.32 + x_factor, -0.45, -0.51);
     w_4.matrix.rotate(90, 0, 0, 1);
     w_4.matrix.scale(0.010 * wall_e_letter_scale, 0.04 * wall_e_letter_scale, 0.01);
+    w_4.normalMatrix.setInverseOf(w_4.matrix).transpose();
     w_4.renderFast();
 
     // writing A in WALL-E
@@ -666,6 +689,7 @@ function renderWallE() {
     a_1.color = [0,0,0, 1.0];
     a_1.matrix.setTranslate(-0.29 + x_factor, -0.45, -0.51);
     a_1.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.01);
+    a_1.normalMatrix.setInverseOf(a_1.matrix).transpose();
     a_1.renderFast();
 
     // second vertical line for A
@@ -673,6 +697,7 @@ function renderWallE() {
     a_2.color = [0,0,0, 1.0];
     a_2.matrix.setTranslate(-0.25 + x_factor, -0.45, -0.51);
     a_2.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.01);
+    a_2.normalMatrix.setInverseOf(a_2.matrix).transpose();
     a_2.renderFast();
 
     // upper top horizontal line for A
@@ -681,6 +706,7 @@ function renderWallE() {
     a_3.matrix.setTranslate(-0.247 + x_factor, -0.42, -0.51);
     a_3.matrix.rotate(90, 0, 0, 1);
     a_3.matrix.scale(0.010 * wall_e_letter_scale, 0.045 * wall_e_letter_scale, 0.01);
+    a_3.normalMatrix.setInverseOf(a_3.matrix).transpose();
     a_3.renderFast();
 
     // middle bar for A
@@ -689,6 +715,7 @@ function renderWallE() {
     a_4.matrix.setTranslate(-0.247 + x_factor, -0.44, -0.51);
     a_4.matrix.rotate(90, 0, 0, 1);
     a_4.matrix.scale(0.010 * wall_e_letter_scale, 0.045 * wall_e_letter_scale, 0.01);
+    a_4.normalMatrix.setInverseOf(a_4.matrix).transpose();
     a_4.renderFast();
 
 
@@ -697,6 +724,7 @@ function renderWallE() {
     l1_1.color = [0,0,0, 1.0];
     l1_1.matrix.setTranslate(-0.22 + x_factor, -0.45, -0.51);
     l1_1.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.01);
+    l1_1.normalMatrix.setInverseOf(l1_1.matrix).transpose();
     l1_1.renderFast();
 
     var l1_2 = new Cube();
@@ -704,6 +732,7 @@ function renderWallE() {
     l1_2.matrix.setTranslate(-0.175 + x_factor, -0.45, -0.51);
     l1_2.matrix.rotate(90, 0, 0, 1);
     l1_2.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.01);
+    l1_2.normalMatrix.setInverseOf(l1_2.matrix).transpose();
     l1_2.renderFast();
 
 
@@ -712,6 +741,7 @@ function renderWallE() {
     l2_1.color = [0,0,0, 1.0];
     l2_1.matrix.setTranslate(-0.16 + x_factor, -0.45, -0.51);
     l2_1.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.01);
+    l2_1.normalMatrix.setInverseOf(l2_1.matrix).transpose();
     l2_1.renderFast();
 
     var l2_2 = new Cube();
@@ -719,6 +749,7 @@ function renderWallE() {
     l2_2.matrix.setTranslate(-0.115 + x_factor, -0.45, -0.51);
     l2_2.matrix.rotate(90, 0, 0, 1);
     l2_2.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.01);
+    l2_2.normalMatrix.setInverseOf(l2_2.matrix).transpose();
     l2_2.renderFast();
 
     // making the dot
@@ -727,6 +758,7 @@ function renderWallE() {
     dot.matrix.setTranslate(-0.09 + x_factor, -0.44, -0.51);
     dot.matrix.rotate(90, 0, 0, 1);
     dot.matrix.scale(0.02 * wall_e_letter_scale, 0.02 * wall_e_letter_scale, 0.01);
+    dot.normalMatrix.setInverseOf(dot.matrix).transpose();
     dot.renderFast();
 
     var e_circle = new Cylinder();
@@ -740,6 +772,7 @@ function renderWallE() {
     e_1.matrix.rotate(90, 0, 0, 1);
     e_1.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.019);
     e_1.matrix.multiply(reflection_matrix);
+    e_1.normalMatrix.setInverseOf(e_1.matrix).transpose();
     e_1.renderFast();
 
     var e_2 = new Cube();
@@ -747,6 +780,7 @@ function renderWallE() {
     e_2.matrix.setTranslate(-0.025 + x_factor, -0.435, -0.5102);
     e_2.matrix.rotate(90, 0, 0, 1);
     e_2.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.019);
+    e_2.normalMatrix.setInverseOf(e_2.matrix).transpose();
     e_2.renderFast();
 
     var e_3 = new Cube();
@@ -754,12 +788,14 @@ function renderWallE() {
     e_3.matrix.setTranslate(-0.025 + x_factor, -0.42, -0.5102);
     e_3.matrix.rotate(90, 0, 0, 1);
     e_3.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.019);
+    e_3.normalMatrix.setInverseOf(e_3.matrix).transpose();
     e_3.renderFast();
 
     var e_4 = new Cube();
     e_4.color = [1,1,1, 1.0];
     e_4.matrix.setTranslate(-0.065 + x_factor, -0.45, -0.5102);
     e_4.matrix.scale(0.010 * wall_e_letter_scale, 0.05 * wall_e_letter_scale, 0.019);
+    e_4.normalMatrix.setInverseOf(e_4.matrix).transpose();
     e_4.renderFast();
 
     // we will be defining all code related to Wall-e's legs here
@@ -801,6 +837,7 @@ function renderWallE() {
     // left_arm.matrix.rotate(arm_horizontal_movement, 0, 1, 0);
     var left_arm_reference_matrix = new Matrix4(left_arm.matrix);
     left_arm.matrix.scale(0.06, 0.05, 0.12);
+    left_arm.normalMatrix.setInverseOf(left_arm.matrix).transpose();
     left_arm.renderFast();
 
     // Wall-e's hands2
@@ -819,6 +856,7 @@ function renderWallE() {
     left_forearm_1.matrix.rotate(- shift_forearm_rotation, 0, 1, 0);
     var left_forearm_1_reference_matrix = new Matrix4(left_forearm_1.matrix);
     left_forearm_1.matrix.scale(0.06, 0.05, 0.20);
+    left_forearm_1.normalMatrix.setInverseOf(left_forearm_1.matrix).transpose();
     left_forearm_1.renderFast();
 
     // left forearm part 2
@@ -830,6 +868,7 @@ function renderWallE() {
     var left_forearm_2_reference_matrix = new Matrix4(left_forearm_2.matrix);
     var left_forearm_2_reference_matrix_2 = new Matrix4(left_forearm_2.matrix);
     left_forearm_2.matrix.scale(0.03, 0.03, 0.12 * (left_forearm_scale / 100));
+    left_forearm_2.normalMatrix.setInverseOf(left_forearm_2.matrix).transpose();
     left_forearm_2.renderFast();
 
     // we need to add the scaling to the hand as well: left_forearm_scale
@@ -846,12 +885,14 @@ function renderWallE() {
     // adding user controlled hand rotation here
     // left_hand_1.matrix.rotate(hand_rotation, 0, 0, 1);
     left_hand_1.matrix.scale(0.01, 0.05, 0.11);
+    left_hand_1.normalMatrix.setInverseOf(left_hand_1.matrix).transpose();
     left_hand_1.renderFast();
 
     var left_hand_2 = new Cube();
     left_hand_2.color = [61/255, 85/255, 117/255, 1.0];
     left_hand_2.matrix = left_forearm_2_reference_matrix;
     left_hand_2.matrix.translate(0.0, -1.1, 0.0);
+    left_hand_2.normalMatrix.setInverseOf(left_hand_2.matrix).transpose();
     left_hand_2.renderFast();
 
     var left_hand_3 = new Cube();
@@ -862,6 +903,7 @@ function renderWallE() {
     left_hand_3.matrix.rotate(-hand_open_close_movement, 0, 1, 0);
     // left_hand_3.matrix.rotate(-hand_rotation, 1, 0, 0);
     left_hand_3.matrix.scale(0.01, 0.05, 0.11);
+    left_hand_3.normalMatrix.setInverseOf(left_hand_3.matrix).transpose();
     left_hand_3.renderFast()
 
     // going to make right arm, fore-arm and right hand
@@ -875,6 +917,7 @@ function renderWallE() {
     right_arm.matrix.rotate(- shift_animation_hands_up, 1, 0, 0);
     var right_arm_reference_matrix = new Matrix4(right_arm.matrix);
     right_arm.matrix.scale(0.06, 0.05, 0.12);
+    right_arm.normalMatrix.setInverseOf(right_arm.matrix).transpose();
     right_arm.renderFast();
 
     // right forearm - part 1
@@ -890,6 +933,7 @@ function renderWallE() {
     right_forearm_1.matrix.rotate(shift_forearm_rotation, 1, 0, 0);
     var right_forearm_1_reference_matrix = new Matrix4(right_forearm_1.matrix);
     right_forearm_1.matrix.scale(0.06, 0.05, 0.20);
+    right_forearm_1.normalMatrix.setInverseOf(right_forearm_1.matrix).transpose();
     right_forearm_1.renderFast();
 
     // right forearm - part 2
@@ -902,6 +946,7 @@ function renderWallE() {
     var right_forearm_2_reference_matrix_2 = new Matrix4(right_forearm_2.matrix);
     // using the left one just to check: this can later have its own parameter "right_forearm_scale"
     right_forearm_2.matrix.scale(0.03, 0.03, 0.12 * (left_forearm_scale / 100));
+    right_forearm_2.normalMatrix.setInverseOf(right_forearm_2.matrix).transpose();
     right_forearm_2.renderFast();
 
     // now going to make the right hand
@@ -915,12 +960,14 @@ function renderWallE() {
     // and it is getting passed by pointers and changing
     right_hand_1.matrix.rotate(hand_open_close_movement, 0, 1, 0);
     right_hand_1.matrix.scale(0.01, 0.05, 0.11);
+    right_hand_1.normalMatrix.setInverseOf(right_hand_1.matrix).transpose();
     right_hand_1.renderFast();
 
     var right_hand_2 = new Cube();
     right_hand_2.color = [61/255, 85/255, 117/255, 1.0];
     right_hand_2.matrix = right_forearm_2_reference_matrix;
     right_hand_2.matrix.translate(0.0, -1.1, 0.0);
+    right_hand_2.normalMatrix.setInverseOf(right_hand_2.matrix).transpose();
     right_hand_2.renderFast();
 
     var right_hand_3 = new Cube();
@@ -931,6 +978,7 @@ function renderWallE() {
     right_hand_3.matrix.rotate(45, 0, 1, 0);
     right_hand_3.matrix.rotate(-hand_open_close_movement, 0, 1, 0);
     right_hand_3.matrix.scale(0.01, 0.05, 0.11);
+    right_hand_3.normalMatrix.setInverseOf(right_hand_3.matrix).transpose();
     right_hand_3.renderFast()
 
     // making Wall-E's neck
@@ -945,6 +993,7 @@ function renderWallE() {
     neck_1.matrix.rotate(shift_animation_neck, 1, 0, 0);
     var neck_1_reference_matrix = new Matrix4(neck_1.matrix);
     neck_1.matrix.scale(0.07, 0.128, 0.07);
+    neck_1.normalMatrix.setInverseOf(neck_1.matrix).transpose();
     neck_1.renderFast();
 
     var neck_2 = new Cube();
@@ -958,6 +1007,7 @@ function renderWallE() {
     var neck_2_reference_matrix = new Matrix4(neck_2.matrix);
     var neck_2_reference_matrix_2 = new Matrix4(neck_2.matrix);
     neck_2.matrix.scale(0.07, 0.128, 0.07);
+    neck_2.normalMatrix.setInverseOf(neck_2.matrix).transpose();
     neck_2.renderFast();
 
     var right_eye = new Cylinder();
@@ -989,6 +1039,7 @@ function renderWallE() {
     right_eyebrow.matrix.translate(-0.7, 0.56 + animation_eyebrow, 0.5); // animation here
     right_eyebrow.matrix.rotate(15, 0, 0, 1);
     right_eyebrow.matrix.scale(1.2, 0.1, 0.1);
+    right_eyebrow.normalMatrix.setInverseOf(right_eyebrow.matrix).transpose();
     right_eyebrow.renderFast();
 
     var left_eye = new Cylinder();
@@ -1020,6 +1071,7 @@ function renderWallE() {
     left_eyebrow.matrix.translate(-0.60, 0.89 + animation_eyebrow, 0.5); // animation here
     left_eyebrow.matrix.rotate(-15, 0, 0, 1);
     left_eyebrow.matrix.scale(1.2, 0.1, 0.1);
+    left_eyebrow.normalMatrix.setInverseOf(left_eyebrow.matrix).transpose();
     left_eyebrow.renderFast();
 
 }
@@ -1109,6 +1161,7 @@ function renderScene() {
   if (normal_value == 1) {
     floor.textureNum = -3;
   }
+  floor.normalMatrix.setInverseOf(floor.matrix).transpose();
   floor.renderFast();
 
   var sky = new Cube();
@@ -1120,6 +1173,7 @@ function renderScene() {
   sky.matrix.scale(-50,-50,-50);
   sky.matrix.translate(-0.5, -0.5, -0.5);
   var sky_reference_matrix = new Matrix4(sky.matrix);
+  sky.normalMatrix.setInverseOf(sky.matrix).transpose();
   sky.renderFast();
 
   // drawing a sphere
@@ -1139,6 +1193,7 @@ function renderScene() {
   light.matrix.scale(-0.1,-0.1,-0.1)
   light.color = [2, 2, 0, 1];
   light.textureNum = -2;
+  light.normalMatrix.setInverseOf(light.matrix).transpose();
   light.renderFast();
 
   // draw the mine craft cubes
@@ -1160,6 +1215,7 @@ function renderScene() {
     block.matrix.translate(0, -0.75, 0);
     block.matrix.scale(1.2, 1.2, 1.2);
     block.matrix.translate(x, 0, - z - 7);
+    block.normalMatrix.setInverseOf(block.matrix).transpose();
     block.renderFast();
   }
 
@@ -1267,6 +1323,13 @@ function connectVariablesToGLSL() {
     console.log('Failed to get the storage location of u_ViewMatrix');
     return;
   }
+
+  // getting the storage locaion for u_normalMatrix
+  // u_normalMatrix = gl.getUniformLocation(gl.program, 'u_normalMatrix');
+  // if (!u_normalMatrix) {
+  //   console.log('Failed to get the storage location of u_normalMatrix');
+  //   return;
+  // }
 
   // u_GlobalScaleMatrix = gl.getUniformLocation(gl.program, "u_GlobalScaleMatrix");
   // if (!u_GlobalScaleMatrix) {
