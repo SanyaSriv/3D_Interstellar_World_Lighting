@@ -62,11 +62,12 @@ var FSHADER_SOURCE =
 
     vec3 lightVector = vec3(v_VertPos) - u_lightPos;
     float r = length(lightVector);
-    if (r < 4.0) {
-      gl_FragColor = vec4(1, 0, 0, 1);
-    } else if (r < 7.0) {
-      gl_FragColor = vec4(0, 1, 0, 1);
-    }
+    // if (r < 4.0) {
+    //   gl_FragColor = vec4(1, 0, 0, 1);
+    // } else if (r < 7.0) {
+    //   gl_FragColor = vec4(0, 1, 0, 1);
+    // }
+    gl_FragColor = vec4(vec3(gl_FragColor) / (r * r), 1);
   }`;
 
 // declaring the global variables
