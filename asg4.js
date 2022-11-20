@@ -37,6 +37,7 @@ var FSHADER_SOURCE =
   uniform sampler2D u_Sampler6;
   uniform int u_whichTexture;
   uniform vec3 u_CameraPos;
+  uniform vec3 u_lightColor;
   uniform bool u_LightValue; // if light is on or off
   void main() {
     if (u_whichTexture == -3) {
@@ -88,8 +89,9 @@ var FSHADER_SOURCE =
     // specular
     float specular = pow(max(dot(E, R), 0.0), 90.0);
 
-    // diffuse
-    vec3 diffuse = vec3(gl_FragColor) * nDotL * 0.7;
+    // diffuse - color of the light should be changed here
+    // vec3 diffuse = vec3(gl_FragColor) * nDotL * 0.7;
+    vec3 diffuse = vec3(gl_FragColor) * vec3(u_lightColor[0], u_lightColor[1], u_lightColor[2]) * nDotL * 0.7;
 
     // ambient
     vec3 ambient = vec3(gl_FragColor) * 0.3;
@@ -148,11 +150,16 @@ let u_lightPos;
 let u_CameraPos;
 let light_on_off_value = 1;
 let u_normalMatrix;
+let u_lightColor;
+let light_color_vector = [1, 1, 1];
 
 // // this will listen to all sliders
 // this is slowing down the program
 function AddActionsToHtmlUI() {
   // listener for camera angle
+  document.getElementById("Light_color_r").addEventListener('mousemove', function() {light_color_vector[0] = this.value / 255;});
+  document.getElementById("Light_color_g").addEventListener('mousemove', function() {light_color_vector[1] = this.value / 255;});
+  document.getElementById("Light_color_b").addEventListener('mousemove', function() {light_color_vector[2] = this.value / 255;});
   document.getElementById("Light_On").addEventListener('mousedown', function() {light_on_off_value = 1;});
   document.getElementById("Light_Off").addEventListener('mousedown', function() {light_on_off_value = 0;});
   document.getElementById("Normal_On").addEventListener('mousedown', function() {normal_value = 1;});
@@ -464,7 +471,7 @@ function renderMap() {
               if (normal_value == 1) {
                 wall.textureNum = -3;
               }
-              
+
             } else {
               wall.textureNum = 3;
               if (normal_value == 1) {
@@ -1113,6 +1120,8 @@ function renderScene() {
   gl.uniform3f(u_CameraPos, g_GlobalCameraInstance.eye.x, g_GlobalCameraInstance.eye.y , g_GlobalCameraInstance.eye.z);
 
   gl.uniform1i(u_LightValue, light_on_off_value);
+
+  gl.uniform3f(u_lightColor, light_color_vector[0], light_color_vector[1], light_color_vector[2]);
   // setting up the scaling
   // var scaling_mat = new Matrix4().scale((global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom);
   // gl.uniformMatrix4fv(u_GlobalScaleMatrix, false, scaling_mat.elements);
@@ -1292,7 +1301,7 @@ function connectVariablesToGLSL() {
     console.log('Failed to get the storage location of u_PointSize');
     return;
   }
-  
+
   // getting the position for u_lightPos
   u_lightPos = gl.getUniformLocation(gl.program, 'u_lightPos');
   if (!u_lightPos) {
@@ -1400,6 +1409,12 @@ function connectVariablesToGLSL() {
   u_CameraPos = gl.getUniformLocation(gl.program, "u_CameraPos");
   if (!u_CameraPos) {
     console.log("Failed to get the location of u_CameraPos");
+    return;
+  }
+
+  u_lightColor = gl.getUniformLocation(gl.program, "u_lightColor");
+  if (!u_lightColor) {
+    console.log("Failed to get the storage location for u_lightColor");
     return;
   }
 
