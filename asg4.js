@@ -60,14 +60,27 @@ var FSHADER_SOURCE =
       gl_FragColor = vec4(1, 0.2, 0.2, 1);
     }
 
-    vec3 lightVector = vec3(v_VertPos) - u_lightPos;
+    // vec3 lightVector = vec3(v_VertPos) - u_lightPos;
+    vec3 lightVector = u_lightPos - vec3(v_VertPos);
     float r = length(lightVector);
     // if (r < 4.0) {
     //   gl_FragColor = vec4(1, 0, 0, 1);
     // } else if (r < 7.0) {
     //   gl_FragColor = vec4(0, 1, 0, 1);
     // }
-    gl_FragColor = vec4(vec3(gl_FragColor) / (r * r), 1);
+    // for a simple torch light
+    //gl_FragColor = vec4(vec3(gl_FragColor) / (r * r), 1);
+
+    // calculating N dot L
+    vec3 L = normalize(lightVector);
+    vec3 N = normalize(v_Normal);
+    float nDotL = max(dot(N, L), 0.0);
+
+    vec3 diffuse = vec3(gl_FragColor) * nDotL;
+    vec3 ambient = vec3(gl_FragColor) * 0.3;
+    gl_FragColor = vec4(diffuse + ambient, 1.0);
+    // gl_FragColor = gl_FragColor * nDotL;
+    // gl_FragColor.a = 1.0;
   }`;
 
 // declaring the global variables
