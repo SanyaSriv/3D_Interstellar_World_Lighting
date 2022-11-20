@@ -11,6 +11,7 @@ class Sphere {
   }
   render() {
     var rgba = this.color;
+    console.log(this.color, rgba);
     gl.uniform1i(u_whichTexture, this.textureNum);
     gl.uniform1f(u_factor, this.color_ratio);
     // Pass the color of a point to u_FragColor variable
@@ -42,6 +43,7 @@ class Sphere {
         uv = uv.concat([0,0]);
 
         gl.uniform4f(u_FragColor, 1, 1, 1, 1);
+        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
         drawTriangles3DUVNormal(v, uv, v); // because the points are also the normals
 
         v = [];
@@ -57,6 +59,7 @@ class Sphere {
         uv = uv.concat([0,0]);
 
         gl.uniform4f(u_FragColor, 1, 0, 1, 1);
+        gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
         drawTriangles3DUVNormal(v, uv, v); // because the points are also the normals
 
 

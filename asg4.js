@@ -1205,7 +1205,7 @@ function renderScene() {
 
   // drawing a sphere
   var s1 = new Sphere();
-  s1.color = [1, 0, 0, 1];
+  s1.color = [140/255, 163/255, 11/255, 1];
   s1.textureNum = -2;
   if (normal_value == 1) {
     s1.textureNum = -3;
