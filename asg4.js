@@ -36,6 +36,7 @@ var FSHADER_SOURCE =
   uniform sampler2D u_Sampler6;
   uniform int u_whichTexture;
   uniform vec3 u_CameraPos;
+  uniform bool u_LightValue; // if light is on or off
   void main() {
     if (u_whichTexture == -3) {
       gl_FragColor = vec4((v_Normal + 1.0)/2.0, 1.0);
@@ -91,7 +92,10 @@ var FSHADER_SOURCE =
 
     // ambient
     vec3 ambient = vec3(gl_FragColor) * 0.3;
-    gl_FragColor = vec4(diffuse + ambient + specular, 1.0);
+
+    if (u_LightValue == true) {
+      gl_FragColor = vec4(diffuse + ambient + specular, 1.0);
+    }
 
     // gl_FragColor = gl_FragColor * nDotL;
     // gl_FragColor.a = 1.0;
@@ -141,11 +145,14 @@ let normal_value = 0;
 let light_position = [3, 6, 0];
 let u_lightPos;
 let u_CameraPos;
+let light_on_off_value = 1;
 
 // // this will listen to all sliders
 // this is slowing down the program
 function AddActionsToHtmlUI() {
   // listener for camera angle
+  document.getElementById("Light_On").addEventListener('mousedown', function() {light_on_off_value = 1;});
+  document.getElementById("Light_Off").addEventListener('mousedown', function() {light_on_off_value = 0;});
   document.getElementById("Normal_On").addEventListener('mousedown', function() {normal_value = 1;});
   document.getElementById("Normal_Off").addEventListener('mousedown', function() {normal_value = 0;});
   document.getElementById("light_x").addEventListener('mousemove', function() {light_position[0] = this.value;});
@@ -1052,6 +1059,8 @@ function renderScene() {
   gl.uniform3f(u_lightPos, light_position[0], light_position[1], light_position[2]);
 
   gl.uniform3f(u_CameraPos, g_GlobalCameraInstance.eye.x, g_GlobalCameraInstance.eye.y , g_GlobalCameraInstance.eye.z);
+
+  gl.uniform1i(u_LightValue, light_on_off_value);
   // setting up the scaling
   // var scaling_mat = new Matrix4().scale((global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom);
   // gl.uniformMatrix4fv(u_GlobalScaleMatrix, false, scaling_mat.elements);
@@ -1232,6 +1241,12 @@ function connectVariablesToGLSL() {
   u_lightPos = gl.getUniformLocation(gl.program, 'u_lightPos');
   if (!u_lightPos) {
     console.log('Failed to get the storage location for u_lightPos');
+    return;
+  }
+
+  u_LightValue = gl.getUniformLocation(gl.program, 'u_LightValue');
+  if (!u_LightValue) {
+    console.log('Failed to get the storage location for u_LightValue');
     return;
   }
 
