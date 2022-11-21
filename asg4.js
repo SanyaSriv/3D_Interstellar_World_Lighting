@@ -185,7 +185,7 @@ let u_spotlightValue;
 let spotlight_color = [1, 1, 1]
 let spotlight_position = [-2.5, 2.5, 3]
 let u_spotlightColor;
-
+var ticker = 0;
 // // this will listen to all sliders
 // this is slowing down the program
 function AddActionsToHtmlUI() {
@@ -226,19 +226,19 @@ function AddActionsToHtmlUI() {
   // document.getElementById("Add_block_colored").addEventListener('mousedown', function() {texture_or_color = 1; add_block();});
   document.getElementById("Delete_block").addEventListener('mousedown', function() {delete_block();});
   document.getElementById("camera_angle2").addEventListener('mousemove', function() {g_globalAngleVertical = this.value; renderScene();});
-  document.getElementById("wall_e_leg_vertical").addEventListener('mousemove', function() {leg_vertical_movement = this.value; scaleVerticalLegMovement();});
-  document.getElementById("arm_vertical").addEventListener('mousemove', function() {arm_vertical_movement = this.value; scaleVerticalArmMovement();});
-  document.getElementById("neck_front_back").addEventListener('mousemove', function() {neck_front_back = this.value; renderScene();});
-  document.getElementById("left_forearm").addEventListener('mousemove', function() {left_forearm_rotation = this.value; renderScene();});
-  document.getElementById("left_forearm_scale").addEventListener('mousemove', function() {left_forearm_scale = this.value; renderScene();});
-  document.getElementById("hands_open_close").addEventListener('mousemove', function() {hand_open_close_movement = this.value; renderScene();});
-  document.getElementById("hands_rotate").addEventListener('mousemove', function() {hand_rotation = this.value; renderScene();});
-  document.getElementById("neck_upper_rotate").addEventListener('mousemove', function() {upper_neck_rotation = this.value; renderScene();});
-  document.getElementById("global_scale").addEventListener('mousemove', function() {global_scale = this.value / 100; renderScene();});
-  document.getElementById("hello_animation_on").addEventListener('mousedown', function() {hello_animation_state = 1; ticker = 0;});
-  document.getElementById("hello_animation_off").addEventListener('mousedown', function() {hello_animation_state = 0; ticker = 0;});
+  // document.getElementById("wall_e_leg_vertical").addEventListener('mousemove', function() {leg_vertical_movement = this.value; scaleVerticalLegMovement();});
+  // document.getElementById("arm_vertical").addEventListener('mousemove', function() {arm_vertical_movement = this.value; scaleVerticalArmMovement();});
+  // document.getElementById("neck_front_back").addEventListener('mousemove', function() {neck_front_back = this.value; renderScene();});
+  // document.getElementById("left_forearm").addEventListener('mousemove', function() {left_forearm_rotation = this.value; renderScene();});
+  // document.getElementById("left_forearm_scale").addEventListener('mousemove', function() {left_forearm_scale = this.value; renderScene();});
+  // document.getElementById("hands_open_close").addEventListener('mousemove', function() {hand_open_close_movement = this.value; renderScene();});
+  // document.getElementById("hands_rotate").addEventListener('mousemove', function() {hand_rotation = this.value; renderScene();});
+  // document.getElementById("neck_upper_rotate").addEventListener('mousemove', function() {upper_neck_rotation = this.value; renderScene();});
+  // document.getElementById("global_scale").addEventListener('mousemove', function() {global_scale = this.value / 100; renderScene();});
+  // document.getElementById("hello_animation_on").addEventListener('mousedown', function() {hello_animation_state = 1;});
+  // document.getElementById("hello_animation_off").addEventListener('mousedown', function() {hello_animation_state = 0;});
   // trying to add the shift ket animation
-  document.addEventListener('mousedown', function (ev) {special_shift_animation = ev.shiftKey; ticker = 0;});
+  document.addEventListener('mousedown', function (ev) {special_shift_animation = ev.shiftKey;});
 }
 
 function initTextures(gl, n) {
@@ -1644,7 +1644,6 @@ function keydown(ev) {
 
 var start_time = performance.now() / 1000.0;
 var seconds = performance.now() / 1000.0 - start_time;
-var ticker = 0;
 
 function tick() {
   seconds = performance.now() / 1000.0 - start_time;
@@ -1745,7 +1744,7 @@ function setAnnimationAngles() {
     if (ticker > 405) {
       // at this point 1 set of animation is complete, and we can loop over this again
       // reset
-      ticker = 0;
+      // ticker = 0; -> commenting this out because Wall E does not exist
       animation_neck_lower = 0;
       animation_neck_upper = 0;
       animation_eyebrow = 0;
