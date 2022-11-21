@@ -40,6 +40,8 @@ var FSHADER_SOURCE =
   uniform vec3 u_lightColor;
   uniform vec3 u_spotlightPos;
   uniform bool u_spotlightValue;
+  uniform vec3 u_spotlightColor;
+
   uniform bool u_LightValue; // if light is on or off
   void main() {
     if (u_whichTexture == -3) {
@@ -105,13 +107,18 @@ var FSHADER_SOURCE =
     // doing the spotlight work here
 
     if (u_spotlightValue) {
+      // if we want the spot light to have a different color, we will have to probably multiply it
       vec3 spotlightVector = normalize(u_spotlightPos - vec3(v_VertPos));
       vec3 spotlightEye = - normalize(vec3(0, -1, 0));
       float angle = dot(spotlightVector, spotlightEye);
       vec3 spotlight;
       if (angle >= 0.9) {
         float spot = pow(angle, 25.0);
-        spotlight = vec3(gl_FragColor[0], gl_FragColor[1], gl_FragColor[2]) * spot;
+        // we have 2 options here
+        // first option: will give a very distinct color to spotlight
+        // second option: will blend the spotlight with the main light
+        spotlight = spot * u_spotlightColor;
+        // spotlight = vec3(gl_FragColor[0], gl_FragColor[1], gl_FragColor[2]) * spot * u_spotlightColor;
       }
       gl_FragColor = vec4(gl_FragColor[0] + spotlight[0], gl_FragColor[1] + spotlight[1], gl_FragColor[2] + spotlight[2], 1.0);
     } 
@@ -175,8 +182,9 @@ let light_animation = 0;
 let light_animation_type = 0; // circular, 1 = horizontal
 let spotlight_value = 1; // will be turned on be default
 let u_spotlightValue;
-let spotlight_color = []
+let spotlight_color = [1, 1, 1]
 let spotlight_position = [-2.5, 2.5, 3]
+let u_spotlightColor;
 
 // // this will listen to all sliders
 // this is slowing down the program
@@ -185,25 +193,34 @@ function AddActionsToHtmlUI() {
   document.getElementById("spotlight_x").addEventListener('mousemove', function() {spotlight_position[0] = this.value;});
   document.getElementById("spotlight_y").addEventListener('mousemove', function() {spotlight_position[1] = this.value;});
   document.getElementById("spotlight_z").addEventListener('mousemove', function() {spotlight_position[2] = this.value;});
-  document.getElementById("spotlight_color_r").addEventListener('mousemove', function() {spotlight_value[0] = this.value / 255;});
+  
+  document.getElementById("spotlight_color_r").addEventListener('mousemove', function() {spotlight_color[0] = this.value / 255;});
   document.getElementById("spotlight_color_g").addEventListener('mousemove', function() {spotlight_color[1] = this.value / 255;});
   document.getElementById("spotlight_color_b").addEventListener('mousemove', function() {spotlight_color[2] = this.value / 255;});
+ 
   document.getElementById("spotlight_on").addEventListener('mousedown', function() {spotlight_value = 1;});
   document.getElementById("spotlight_off").addEventListener('mousedown', function() {spotlight_value = 0;});
+  
   document.getElementById("Circular_Animation").addEventListener('mousedown', function() {light_animation_type = 0;});
   document.getElementById("Horizontal_Animation").addEventListener('mousedown', function() {light_animation_type = 1;});
+ 
   document.getElementById("Light_Animation_On").addEventListener('mousedown', function() {light_animation = 1;});
   document.getElementById("Light_Animation_Off").addEventListener('mousedown', function() {light_animation = 0;});
+  
   document.getElementById("Light_color_r").addEventListener('mousemove', function() {light_color_vector[0] = this.value / 255;});
   document.getElementById("Light_color_g").addEventListener('mousemove', function() {light_color_vector[1] = this.value / 255;});
   document.getElementById("Light_color_b").addEventListener('mousemove', function() {light_color_vector[2] = this.value / 255;});
+  
   document.getElementById("Light_On").addEventListener('mousedown', function() {light_on_off_value = 1;});
   document.getElementById("Light_Off").addEventListener('mousedown', function() {light_on_off_value = 0;});
+  
   document.getElementById("Normal_On").addEventListener('mousedown', function() {normal_value = 1;});
   document.getElementById("Normal_Off").addEventListener('mousedown', function() {normal_value = 0;});
+  
   document.getElementById("light_x").addEventListener('mousemove', function() {light_position[0] = this.value;});
   document.getElementById("light_y").addEventListener('mousemove', function() {light_position[1] = this.value;});
   document.getElementById("light_z").addEventListener('mousemove', function() {light_position[2] = this.value;});
+  
   document.getElementById("camera_angle").addEventListener('mousemove', function() {g_GlobalCameraInstance.fov = parseInt(this.value);});
   document.getElementById("Add_block").addEventListener('mousedown', function() {texture_or_color = 0; add_block();});
   // document.getElementById("Add_block_colored").addEventListener('mousedown', function() {texture_or_color = 1; add_block();});
@@ -1177,7 +1194,10 @@ function renderScene() {
 
   // passing the u_spotlightValue value to determine if the spotlight should be on or not
   gl.uniform1i(u_spotlightValue, spotlight_value);
-
+  
+  // passing the spotlight color
+  // console.log("Spotlight coloe is: ", spotlight_color);
+  gl.uniform3f(u_spotlightColor, spotlight_color[0], spotlight_color[1], spotlight_color[2]);
   // setting up the scaling
   // var scaling_mat = new Matrix4().scale((global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom);
   // gl.uniformMatrix4fv(u_GlobalScaleMatrix, false, scaling_mat.elements);
@@ -1486,6 +1506,12 @@ function connectVariablesToGLSL() {
   u_spotlightPos = gl.getUniformLocation(gl.program, "u_spotlightPos");
   if (!u_spotlightPos) {
     console.log("Failed to get the storage location for u_spotlightPos");
+    return;
+  }
+
+  u_spotlightColor = gl.getUniformLocation(gl.program, "u_spotlightColor");
+  if (!u_spotlightColor) {
+    console.log("Failed to get the storage location for u_spotlightColor");
     return;
   }
 
