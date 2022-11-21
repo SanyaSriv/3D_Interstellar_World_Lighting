@@ -38,6 +38,8 @@ var FSHADER_SOURCE =
   uniform int u_whichTexture;
   uniform vec3 u_CameraPos;
   uniform vec3 u_lightColor;
+  uniform vec3 u_spotlightPos;
+  uniform bool u_spotlightValue;
   uniform bool u_LightValue; // if light is on or off
   void main() {
     if (u_whichTexture == -3) {
@@ -100,8 +102,24 @@ var FSHADER_SOURCE =
       gl_FragColor = vec4(diffuse + ambient + specular, 1.0);
     }
 
-    // gl_FragColor = gl_FragColor * nDotL;
-    // gl_FragColor.a = 1.0;
+    // doing the spotlight work here
+
+    if (u_spotlightValue) {
+      vec3 spotlightVector = normalize(u_spotlightPos - vec3(v_VertPos));
+      vec3 spotlightEye = - normalize(vec3(0, -1, 0));
+      float angle = dot(spotlightVector, spotlightEye);
+      vec3 spotlight;
+      if (angle >= 0.9) {
+        float spot = pow(angle, 25.0);
+        spotlight = vec3(gl_FragColor[0], gl_FragColor[1], gl_FragColor[2]) * spot;
+      }
+      gl_FragColor = vec4(gl_FragColor[0] + spotlight[0], gl_FragColor[1] + spotlight[1], gl_FragColor[2] + spotlight[2], 1.0);
+    } 
+    
+    
+    //smaller the number, bigger the angle
+    // // gl_FragColor = gl_FragColor * nDotL;
+    // // gl_FragColor.a = 1.0;
   }`;
 
 // declaring the global variables
@@ -151,14 +169,19 @@ let u_CameraPos;
 let light_on_off_value = 1;
 let u_normalMatrix;
 let u_lightColor;
+let u_spotlightPos;
 let light_color_vector = [1, 1, 1];
 let light_animation = 0;
 let light_animation_type = 0; // circular, 1 = horizontal
+let spotlight_value = 1; // will be turned on be default
+let u_spotlightValue;
 
 // // this will listen to all sliders
 // this is slowing down the program
 function AddActionsToHtmlUI() {
   // listener for camera angle
+  document.getElementById("spotlight_on").addEventListener('mousedown', function() {spotlight_value = 1;});
+  document.getElementById("spotlight_off").addEventListener('mousedown', function() {spotlight_value = 0;});
   document.getElementById("Circular_Animation").addEventListener('mousedown', function() {light_animation_type = 0;});
   document.getElementById("Horizontal_Animation").addEventListener('mousedown', function() {light_animation_type = 1;});
   document.getElementById("Light_Animation_On").addEventListener('mousedown', function() {light_animation = 1;});
@@ -1140,6 +1163,13 @@ function renderScene() {
   gl.uniform1i(u_LightValue, light_on_off_value);
 
   gl.uniform3f(u_lightColor, light_color_vector[0], light_color_vector[1], light_color_vector[2]);
+
+  // passing on the spotlight position
+  gl.uniform3f(u_spotlightPos, -2.5, 2.5, 3.0);
+
+  // passing the u_spotlightValue value to determine if the spotlight should be on or not
+  gl.uniform1i(u_spotlightValue, spotlight_value);
+
   // setting up the scaling
   // var scaling_mat = new Matrix4().scale((global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom, (global_scale / 100) * annimation_zoom);
   // gl.uniformMatrix4fv(u_GlobalScaleMatrix, false, scaling_mat.elements);
@@ -1445,6 +1475,17 @@ function connectVariablesToGLSL() {
     return;
   }
 
+  u_spotlightPos = gl.getUniformLocation(gl.program, "u_spotlightPos");
+  if (!u_spotlightPos) {
+    console.log("Failed to get the storage location for u_spotlightPos");
+    return;
+  }
+
+  u_spotlightValue = gl.getUniformLocation(gl.program, "u_spotlightValue");
+  if (!u_spotlightValue) {
+    console.log("Failed to get the storage location for u_spotlightValue");
+    return;
+  }
   var identityM = new Matrix4();
   gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, identityM.elements);
