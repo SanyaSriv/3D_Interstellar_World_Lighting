@@ -8,6 +8,7 @@ class Sphere {
     this.textureNum = -2;
     this.factor = 1;
     this.color_ratio = 0;
+    this.normalMatrix = new Matrix4();
   }
   render() {
     var rgba = this.color;

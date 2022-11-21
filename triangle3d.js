@@ -3,6 +3,7 @@ class Triangle3D {
     this.color = [1.0, 0.0, 0.0, 1.0];
     this.type = "triangle3d";
     this.matrix = new Matrix4();
+    this.normalMatrix = new Matrix4();
   }
   render() {
     var xy = this.position;

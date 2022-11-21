@@ -3,6 +3,7 @@ class Cylinder {
     this.color = [1.0, 0.0, 0.0, 1.0];
     this.type = "sphere";
     this.matrix = new Matrix4();
+    this.normalMatrix = new Matrix4();
   }
   render() {
     var xy = this.position;
