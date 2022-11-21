@@ -186,10 +186,11 @@ let spotlight_color = [1, 1, 1]
 let spotlight_position = [-2.5, 2.5, 3]
 let u_spotlightColor;
 var ticker = 0;
+var ticker2  = 0;
 // // this will listen to all sliders
 // this is slowing down the program
 function AddActionsToHtmlUI() {
-  // listener for camera angle
+  // spotlight
   document.getElementById("spotlight_x").addEventListener('mousemove', function() {spotlight_position[0] = this.value;});
   document.getElementById("spotlight_y").addEventListener('mousemove', function() {spotlight_position[1] = this.value;});
   document.getElementById("spotlight_z").addEventListener('mousemove', function() {spotlight_position[2] = this.value;});
@@ -238,7 +239,7 @@ function AddActionsToHtmlUI() {
   // document.getElementById("hello_animation_on").addEventListener('mousedown', function() {hello_animation_state = 1;});
   // document.getElementById("hello_animation_off").addEventListener('mousedown', function() {hello_animation_state = 0;});
   // trying to add the shift ket animation
-  document.addEventListener('mousedown', function (ev) {special_shift_animation = ev.shiftKey;});
+  document.addEventListener('mousedown', function (ev) {special_shift_animation = ev.shiftKey; ticker2 = 0;});
 }
 
 function initTextures(gl, n) {
@@ -1648,6 +1649,7 @@ var seconds = performance.now() / 1000.0 - start_time;
 function tick() {
   seconds = performance.now() / 1000.0 - start_time;
   ticker += 1;
+  ticker2 += 1;
 
   setAnnimationAngles();
 
@@ -1761,19 +1763,19 @@ function setAnnimationAngles() {
   }
   if (special_shift_animation == true) {
     // in this animation, we can rotate WallE quickly and then let it do a quick thing
-    if ((0 < ticker) && (ticker < 60)) {
+    if ((0 < ticker2) && (ticker2 < 60)) {
       shift_animation_rotation += 3;
       shift_animation_hands_up += 1;
       shift_animation_neck += 1;
       shift_forearm_rotation += 0.5;
       shift_leg_rotation += 0.0009;
-    } else if ((60 < ticker) && (ticker < 120)) {
+    } else if ((60 < ticker2) && (ticker2 < 120)) {
       shift_animation_rotation += 3;
       shift_animation_hands_up -= 1;
       shift_animation_neck -= 1;
       shift_forearm_rotation -= 0.5;
       shift_leg_rotation -= 0.0009;
-    } else if (ticker > 120) { // end this animation
+    } else if (ticker2 > 120) { // end this animation
       special_shift_animation = false;
       shift_animation_neck = 0;
       shift_animation_hands_up = 0;
