@@ -175,11 +175,19 @@ let light_animation = 0;
 let light_animation_type = 0; // circular, 1 = horizontal
 let spotlight_value = 1; // will be turned on be default
 let u_spotlightValue;
+let spotlight_color = []
+let spotlight_position = [-2.5, 2.5, 3]
 
 // // this will listen to all sliders
 // this is slowing down the program
 function AddActionsToHtmlUI() {
   // listener for camera angle
+  document.getElementById("spotlight_x").addEventListener('mousemove', function() {spotlight_position[0] = this.value;});
+  document.getElementById("spotlight_y").addEventListener('mousemove', function() {spotlight_position[1] = this.value;});
+  document.getElementById("spotlight_z").addEventListener('mousemove', function() {spotlight_position[2] = this.value;});
+  document.getElementById("spotlight_color_r").addEventListener('mousemove', function() {spotlight_value[0] = this.value / 255;});
+  document.getElementById("spotlight_color_g").addEventListener('mousemove', function() {spotlight_color[1] = this.value / 255;});
+  document.getElementById("spotlight_color_b").addEventListener('mousemove', function() {spotlight_color[2] = this.value / 255;});
   document.getElementById("spotlight_on").addEventListener('mousedown', function() {spotlight_value = 1;});
   document.getElementById("spotlight_off").addEventListener('mousedown', function() {spotlight_value = 0;});
   document.getElementById("Circular_Animation").addEventListener('mousedown', function() {light_animation_type = 0;});
@@ -1165,7 +1173,7 @@ function renderScene() {
   gl.uniform3f(u_lightColor, light_color_vector[0], light_color_vector[1], light_color_vector[2]);
 
   // passing on the spotlight position
-  gl.uniform3f(u_spotlightPos, -2.5, 2.5, 3.0);
+  gl.uniform3f(u_spotlightPos, spotlight_position[0], spotlight_position[1], spotlight_position[2]);
 
   // passing the u_spotlightValue value to determine if the spotlight should be on or not
   gl.uniform1i(u_spotlightValue, spotlight_value);
@@ -1254,7 +1262,7 @@ function renderScene() {
   light.renderFast();
 
   var spotlight = new Cube();
-  spotlight.matrix.translate(-2.5, 2.5, 3);
+  spotlight.matrix.translate(spotlight_position[0], spotlight_position[1], spotlight_position[2]);
   spotlight.matrix.scale(-0.2, -0.2, -0.2);
   spotlight.color = [2, 2, 0, 1];
   spotlight.textureNum = -2;
