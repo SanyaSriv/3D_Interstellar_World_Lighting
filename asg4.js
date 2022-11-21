@@ -92,7 +92,7 @@ var FSHADER_SOURCE =
 
     // specular
     // float specular = pow(max(dot(E, R), 0.0), 90.0);
-    vec3 specular = pow(max(dot(E, R), 0.0), 90.0) * vec3(u_lightColor[0], u_lightColor[1], u_lightColor[2]);
+    vec3 specular = pow(max(dot(E, R), 0.0), 90.0) * vec3(u_lightColor[0], u_lightColor[1], u_lightColor[2]) * 0.95;
     // diffuse - color of the light should be changed here
     // vec3 diffuse = vec3(gl_FragColor) * nDotL * 0.7;
     vec3 diffuse = vec3(gl_FragColor) * vec3(u_lightColor[0], u_lightColor[1], u_lightColor[2]) * nDotL * 0.7;
@@ -119,6 +119,7 @@ var FSHADER_SOURCE =
         // second option: will blend the spotlight with the main light
         spotlight = spot * u_spotlightColor;
         // spotlight = vec3(gl_FragColor[0], gl_FragColor[1], gl_FragColor[2]) * spot * u_spotlightColor;
+        // gl_FragColor = vec4(gl_FragColor[0] + spotlight[0], gl_FragColor[1] + spotlight[1], gl_FragColor[2] + spotlight[2], 1.0);
       }
       gl_FragColor = vec4(gl_FragColor[0] + spotlight[0], gl_FragColor[1] + spotlight[1], gl_FragColor[2] + spotlight[2], 1.0);
     } 
