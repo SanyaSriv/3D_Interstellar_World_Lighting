@@ -16,43 +16,48 @@
     <strong> Lighting: Black Hole Space Station with Lighting</strong>
     <br> 
     <br> <strong>World from the previous assignment is used. </strong>
-    <br> Blocky Animal Added: Wall - E from assignment 2
     <br>
-    <br> Hello traveller! This world is a space station surrounded by
-    <br> black holes on all sides.
+    <br> Hello traveller! This world is the same space station surrounded by
+    <br> black holes on all sides as you experienced in the previous assignment.
+    <br> The rules of this world are exactly the same as last time:
     <br> About this world (or Game):
     <br> <strong> To escape the black hole, you will have to find a few things/materials. </strong>
-    <br> - This space station has 3 pyramids (yellow top, blue top, and
-    <br> textured top). Use the keys A and D to go left
-    <br> and right to explore all pyramids. Every pyramid has
-    <br> some material (gold, silver, or energy: represented by a neon cube)
-    <br> hidden inside it.
-    <br> - If you want to get that material, go near the pyramid, and try to
-    <br> remove the blocks. Blocks can be removed by clicking on the
-    <br> "Delete Block" button. Remove them, and get the material!
-    <br> - You can build add your own blocks too by clicking on the "Add Block Textured"
-    <br> button. If you click that, a block will be added in front of you.
-    <br> To delete it, you can press the "Delete Block" button.
-    <br> - You also have your personal robot assistant: Mr. Wall-E. You can
-    <br> control Wall-E by the sliders below the virtual world. Move ahead in this
-    <br> world (by pressing W) to go close to Wall-E.
-    <br> - If you want WALL-E to wave a hello: press on the "Animation On" button.
-    <br> To stop the annimation, press on the "Animation Off" button.
-    <br> - <strong> Press shift to get a view of the whole world and for Wall-E to do something funky. </strong>
-    <br> - To move around, use the following keys: A, S, D, W, Q, and E.
-    <br> You can also use your mouse to turn left and right.
-    <br> - Also, as a traveller, you must know that in this world, all the letters
-    <br> have lateral inversion and we justify it by the curvature of
-    <br> space time as we are in the middle of 4 black holes.
+    <br> - Use the keys A, S, D, Q, W, E to move in the space station.
+    <br> - Every pyramid has some material (gold, silver, or energy: represented by a neon cube) hidden inside it.
+    <br> - You can add and delete block
+    <br> - <strong> Press shift to get a view of the whole world. </strong>
+    <br> - You can also use your mouse to turn left and right.
     <br> - Another feature of this futuristic world: There are no collisions. If you
     <br> keep walking, you might as well go inside a block. The general laws of
     <br> physics seem to be broken here.
     <br> <br>
-    <br> Fun fact: Normally if you add a block, you will add a textured block. But if you
-    <br> add it on top of a colored block such as the magenta block on the boundry, you will
-    <br> get a colored block!
-    All the best for your journey!
-    <br> <br>
+    <br> <strong>Things that are unique in this world now as compared to the last assignment: </strong>
+    <br>
+    <br> - There is a massive green sphere in the middle!
+    <br> <strong>There are 2 yellow boxes: The smaller in the back represents the light.
+      <br> The bigger in the front represents the spotlight.
+    </strong>
+    <br> - To turn on/off the normal view, use the buttons "Normal On" and "Normal Off".
+    <br> - There is Phong lighting (diffuse + ambient + specular). The small yellow box in the back
+    <br> represents the light.
+    <br> - There are 2 kinds of annimations in the main light: 
+    <br> - To turn on the light animation, click on the "Light Animation On" button.
+    <br> To turn off the animation, click on the "Light Animation Off" button. By default, the type
+    <br> of animation is set to Circular, which means the light will go in a circular motion around the world.
+    <br> If you want to chnage the animation to horizontal (in which just the x component will change and the
+    <br> light will move left to right on the screen), click on the "Horizontal Animation" button. If you
+    <br> want to revert the animation to circular, click on the "Circular Animation" button.
+    <br> - To manually change the position of the main light, use the sliders: "Light: X", "Light: Y", and
+    <br> "Light: Z" next to the "Light Movement" label.
+    <br> - To change the color of the light, use the sliders "Red", "Green", and "Blue" next to the "Light Color" label.
+    <br> - To turn the light on and off, use the buttons "Light On" and "Light Off". Note: this will not
+    <br> turn off the spotlight. There are different controls for turning the spotlight on/off.
+    <br> - There is a bigger yellow box in the front that represents the spotlight. 
+    <br> - To change the position of the spotlight, use the sliders "X", "Y", and "Z" next to the "Spotlight Position"
+    <br> label. 
+    <br> - To change the color of the spotlight, use the RGB sliders next to the label "Spotlight Color".
+    <br> - To turn on/off the spotlight, use the buttons "Spotlight On" and "Spotlight Off".
+    <br><br>
     <strong> Performance Observation Note: I noticed that my application is way faster on Safari
     <br> than on Chrome. </strong>
     </p>
@@ -95,7 +100,7 @@
     <label>Blue: </label>
     <input for="name" type="range" class="slider" id="Light_color_b" min=0 max=255 value=255></input>
     <br><br>
-    <label>Light Movement</label>
+    <label>Light Movement: </label>
     <label> Light: X</label>
     <input type="range" for="name" class="slider" id="light_x" min=-10 max=10 value=3></input>
     <label>Light: Y</label>
