@@ -10,7 +10,7 @@ var VSHADER_SOURCE =
   uniform mat4 u_GlobalRotateMatrix;
   uniform mat4 u_ProjectionMatrix;
   uniform mat4 u_ViewMatrix;
-  // uniform mat4 u_normalMatrix;
+  uniform mat4 u_normalMatrix;
   attribute vec3 a_Normal;
   varying vec3 v_Normal;
   void main() {
@@ -1215,6 +1215,7 @@ function renderScene() {
   if (normal_value == 1) {
     gold_cube.textureNum = -3;
   }
+  gold_cube.normalMatrix.setInverseOf(gold_cube.matrix).transpose();
   gold_cube.renderFast();
 
   var silver_cube = new Cube();
@@ -1225,6 +1226,7 @@ function renderScene() {
   if (normal_value == 1) {
     silver_cube.textureNum = -3;
   }
+  silver_cube.normalMatrix.setInverseOf(silver_cube.matrix).transpose();
   silver_cube.renderFast();
 
   var energy = new Cube();
@@ -1235,6 +1237,7 @@ function renderScene() {
   if (normal_value == 1) {
     energy.textureNum = -3;
   }
+  energy.normalMatrix.setInverseOf(energy.matrix).transpose();
   energy.renderFast();
 
   var floor = new Cube();
@@ -1271,6 +1274,7 @@ function renderScene() {
   }
   s1.matrix.scale(1.5,1.5,1.5);
   s1.matrix.translate(1, 1.20, 0);
+  s1.normalMatrix.setInverseOf(s1.matrix).transpose();
   s1.render();
 
   // drawing the light

@@ -19,6 +19,8 @@ class Sphere {
     gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
 
     gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
+
+    gl.uniformMatrix4fv(u_normalMatrix, false, this.normalMatrix.elements);
     // Pass the color of a point to u_FragColor variable
     
     var d = Math.PI/10;

@@ -52,7 +52,7 @@ class Cube {
 
     gl.uniform1i(u_factor, this.color_ratio);
 
-    // gl.uniformMatrix4fv(u_normalMatrix, false, this.normalMatrix.elements);
+    gl.uniformMatrix4fv(u_normalMatrix, false, this.normalMatrix.elements);
     // if (this.vertices === null) {
     //   this.generateVertices();
     // }
