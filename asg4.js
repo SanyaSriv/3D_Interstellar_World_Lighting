@@ -191,6 +191,10 @@ var ticker2  = 0;
 // // this will listen to all sliders
 // this is slowing down the program
 function AddActionsToHtmlUI() {
+  // trying to reset light position
+  document.getElementById("Light_Reset").addEventListener('mousedown', function() {document.getElementById("light_x").value = 3; light_position[0] = 3; 
+                                                                                  document.getElementById("light_y").value = 6; light_position[1] = 6;
+                                                                                  document.getElementById("light_z").value = 0; light_position[2] = 0;});
   // spotlight
   document.getElementById("spotlight_x").addEventListener('mousemove', function() {spotlight_position[0] = this.value;});
   document.getElementById("spotlight_y").addEventListener('mousemove', function() {spotlight_position[1] = this.value;});
